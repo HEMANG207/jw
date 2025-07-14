@@ -91,3 +91,65 @@
     <script src="travel.js"></script>
 </body>
 </html>
+function searchRecommendations() {
+    const keyword = document.getElementById("searchInput").value.toLowerCase();
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "Loading...";
+
+    fetch('travel_recommendation_api.json')
+    .then(response => response.json())
+    .then(data => {
+        const results = data.places.filter(place =>
+            place.category.toLowerCase().includes(keyword) ||
+            place.name.toLowerCase().includes(keyword)
+        );
+
+        if (results.length > 0) {
+            resultsDiv.innerHTML = "";
+            results.forEach(place => {
+                resultsDiv.innerHTML += `
+                    <div style="background:white; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.2); margin-bottom:20px; max-width:400px;">
+                        <img src="${place.imageUrl}" alt="${place.name}" style="width:100%; height:200px; object-fit:cover;">
+                        <div style="padding:15px;">
+                            <h3 style="margin:0 0 10px;">${place.name}</h3>
+                            <p style="font-size:14px; color:#555;">${place.description}</p>
+                            <button style="margin-top:10px; background-color:teal; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:4px;">Visit</button>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            resultsDiv.innerHTML = "No results found.";
+        }
+    })
+    .catch(error => {
+        resultsDiv.innerHTML = "Error loading recommendations.";
+        console.error(error);
+    });
+}
+{
+    "places": [
+        {
+            "name": "Isla Nublar",
+            "category": "island",
+            "description": "The island that is home to Jurassic Park and Jurassic World, featuring lush jungles and dinosaurs.",
+            "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY_qdnGfdP7VgFvQYVo_RZ_lsw1TFpfnsdjw&s"
+        },
+        {
+            "name": "Isla Sorna",
+            "category": "island",
+            "description": "Also known as Site B, Isla Sorna is where dinosaurs were engineered and held before being moved to Isla Nublar.",
+            "imageUrl": "https://cdnb.artstation.com/p/assets/images/images/055/154/177/large/rezwanur-rafi-final-copy.jpg?1666244410" 
+        },
+        {
+            "name": "Sorna Thulbert",
+            "category": "island",
+            "description": "Sorna Thulbert is another part of the Isla Sorna ecosystem, rich in biodiversity and dinosaur habitats.",
+            "imageUrl": "https://deadline.com/wp-content/uploads/2025/07/MCDJUWO_UV128.jpg?w=681&h=383&crop=1"
+        }
+    ]
+}
+-
+
+
+
